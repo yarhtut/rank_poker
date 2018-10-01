@@ -1,5 +1,5 @@
-require "bundler/setup"
-require "rank_poker"
+require 'bundler/setup'
+require 'rank_poker'
 require 'pry'
 
 RSpec.configure do |config|

@@ -19,19 +19,19 @@ module RankPoker
     end
 
     def double_pair?
-      count_group_of_pair == [1, 2, 2]
-     end
+      count_group_of_cards_pair == [1, 2, 2]
+    end
 
     def three_of_a_kind?
-      count_group_of_pair == [1, 1, 3]
+      count_group_of_cards_pair == [1, 1, 3]
     end
 
     def four?
-      count_group_of_pair == [1, 4]
+      count_group_of_cards_pair == [1, 4]
     end
 
     def full_house?
-      count_group_of_pair == [2, 3]
+      count_group_of_cards_pair == [2, 3]
     end
 
     def straight?
@@ -75,22 +75,8 @@ module RankPoker
     #
     # @group_by_card_vales {[8]=>[8,8], [2]=> [2,2], [4]=>[4] }
     # @returns  [2,2,1] only return the total pair
-    def count_group_of_pair
-      rank_type = []
-
-      group_by_card_values.each do |k, v|
-        if v.count == 2
-          rank_type << ['pair', k]
-        elsif v.count == 3
-          rank_type << ['three_of_a_kind', k]
-        elsif v.count == 4
-          rank_type << ['four', k]
-        else
-           # check straight || flush || highest_card
-        end
-      end
-
-      return full_house = true if pair && three_of_a_kind
+    def count_group_of_cards_pair
+      group_by_card_values.map { |_k, v| v.count }.sort
     end
 
     # Convert group of card
