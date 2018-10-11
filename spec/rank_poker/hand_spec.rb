@@ -12,29 +12,52 @@ RSpec.describe RankPoker::Hand do
   end
 
   it 'should have a double pair' do
-    expect(RankPoker::Hand.new('TC 4S TC 4S 6S').double_pair?).to be true 
+    expect(RankPoker::Hand.new('TC 4S TC 4S 6S').two_pair?).to be true 
   end
 
-  it 'should have a double pair' do
-    expect(RankPoker::Hand.new('TC 4S 6S 4S TC').double_pair?).to be true 
+  it 'should have a two pair' do
+    expect(RankPoker::Hand.new('TC 4S 6S 4S TC').two_pair?).to be true 
   end
 
-  it 'should have a three_king' do
-    expect(RankPoker::Hand.new('TC 4S TD TS 6S').three_of_a_kind?).to be true 
+
+
+  context '#four_of_a_kind?' do
+    it 'should have a four' do
+      expect(RankPoker::Hand.new('TC TS TD TC 6S').four_of_a_kind?).to be true 
+    end
+
+    it 'should have a right category name' do
+      expect(RankPoker::Hand.new('TC TS TD TC 6S').category).to be 'Four of a kind'
+    end
   end
 
-  it 'should have a four' do
-    expect(RankPoker::Hand.new('TC TS TD TC 6S').four?).to be true 
+  context '#three_of_a_kind?' do
+    it 'should have a three_king' do
+      expect(RankPoker::Hand.new('TC 4S TD TS 6S').three_of_a_kind?).to be true 
+    end
+
+    it 'should have a right category name' do
+      expect(RankPoker::Hand.new('TC 4S TD TS 6S').category).to eq 'Three of a kind'
+    end
   end
 
-  it 'should have a three_king' do
-    expect(RankPoker::Hand.new('TC 6S TD TS 6D').full_house?).to be true 
+  context '#full_house?' do
+    it 'should have a full house' do
+      expect(RankPoker::Hand.new('TC 6S TD TS 6D').full_house?).to be true 
+    end
+    it 'should have a right category name' do
+      expect(RankPoker::Hand.new('TC 6S TD TS 6D').category).to eq 'Full house' 
+    end
   end
 
  
   context '#straight?' do
     it 'should return true for straight' do 
       expect(RankPoker::Hand.new('TC JS QD KS AD').straight?).to be true 
+    end
+
+    it 'should return true for straight' do 
+      expect(RankPoker::Hand.new('2C 3S 4D 5S AD').straight?).to be true 
     end
 
     it 'should return false for straight' do 

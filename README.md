@@ -33,3 +33,25 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rank_poker.
+
+## TODO
+# improve method naming or method return values making more sense
+# DONE
+
+# Need to remove unnessessary if statements
+# DONE
+
+# Need to change Card to use value written on the card.
+# Ace's don't work at the bottom of a straight (A 2 3 4 5)
+
+# IMPORTANT: Don't yet know the 'value' of the category like Pair of 5's
+
+
+# Maybe ??
+# Category as Class move logic from Hand.class
+
+# do you need a class called Group?
+
+# class Group < ::OpenStruct
+#   attr_reader :value, size
+# end

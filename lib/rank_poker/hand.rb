@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 
 module RankPoker
   class Hand
@@ -6,6 +5,17 @@ module RankPoker
     attr_reader :cards
 
     CARDS_PER_HAND = 5
+    CATEGORIES = [
+      'Royal flush',
+      'Straight flush',
+      'Four of a kind',
+      'Full house',
+      'Straight',
+      'Flush',
+      'Three of a kind',
+      'Two pair',
+      'Pair'
+    ].freeze
 
     def initialize(cards)
       cards = cards.split(' ')
@@ -14,24 +24,44 @@ module RankPoker
       @cards = cards.map { |card| Card.new(card) }
     end
 
+    def <=>(other_hand)
+      CATEGORIES.index(category) <=> CATEGORIES.index(other_hand.category)
+    end
+
+    # look into instead all calling every single methods.
+    def category
+      {
+        'Royal flush' => royal_flush?,
+        'Straight flush' => straight_flush?,
+        'Four of a kind' => four_of_a_kind?,
+        'Full house' => full_house?,
+        'Straight' => straight?,
+        'Flush' => flush?,
+        'Three of a kind' => three_of_a_kind?,
+        'Two pair' => two_pair?,
+        'Pair' => pair?
+      }
+        .find { |_name, method| method == true }.first
+    end
+
     def pair?
       group_by_card_values.count == 4
     end
 
-    def double_pair?
-      count_group_of_cards_pair == [1, 2, 2]
+    def two_pair?
+      count_group_of_cards == [1, 2, 2]
     end
 
     def three_of_a_kind?
-      count_group_of_cards_pair == [1, 1, 3]
+      count_group_of_cards == [1, 1, 3]
     end
 
-    def four?
-      count_group_of_cards_pair == [1, 4]
+    def four_of_a_kind?
+      count_group_of_cards == [1, 4]
     end
 
     def full_house?
-      count_group_of_cards_pair == [2, 3]
+      count_group_of_cards == [2, 3]
     end
 
     def straight?
@@ -39,8 +69,14 @@ module RankPoker
 
         cards_in_order = @cards.map(&:value).sort
 
-        cards_in_order.each_cons(2).all? do |first, second|
-          first + 1 == second
+        if cards_in_order.first == 2 && cards_in_order.last == 14
+          cards_in_order.delete(14)
+          cards_in_order << 1
+        end
+
+        cards_in_order.sort.each_cons(2).all? do |first, second|
+        # try
+        first + 1 == second
         end
       end
     end
@@ -50,15 +86,11 @@ module RankPoker
     end
 
     def straight_flush?
-      straight? && flush? && @cards.map(&:value).min < 8
+      straight? && flush? && @cards.map(&:value).min < 10
     end
 
     def royal_flush?
-      straight? && flush? && @cards.map(&:value).min == 8
-    end
-
-    def category
-      # return the best category that matches this hand.
+      straight? && flush? && @cards.map(&:value).min == 10
     end
 
     private
@@ -73,27 +105,14 @@ module RankPoker
 
     # Convert group of card count
     #
-    # @group_by_card_vales {[8]=>[8,8], [2]=> [2,2], [4]=>[4] }
-    # @returns  [2,2,1] only return the total pair
-    def count_group_of_cards_pair
-      group_by_card_values.map { |_k, v| v.count }.sort
-    end
-
-    # Convert group of card
-    #
-    # @group_by_card_vales {[8]=>[8,8], [2]=> [2,2], [4]=>[4] }
-    # @returns  [2,2,1] only the value
-    def values_of_group_card
-      group_by_card_values.map { |k, _v| k }.sort
+    # @group_by_card_values {[8]=>[8,8], [2]=> [2,2], [4]=>[4] }
+    # @returns  [[8,2] [2,1], [4,1]]only return the total pair
+    def count_group_of_cards
+      # test = group_by_card_values.map do |value, pair_size|
+      #   Group.new(value, pair_size.count)
+      # end
+      group_by_card_values.map { |_k,value| value.count }.sort
+      
     end
   end
 end
-
-# improve method naming or method return values making more sense
-# DONE
-
-# Need to remove unnessessary if statements
-# DONE
-# Need to change Card to use value written on the card.
-# Ace's don't work at the bottom of a straight (A 2 3 4 5)
-# Don't yet know the 'value' of the category like Pair of 5's
