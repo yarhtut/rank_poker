@@ -25,7 +25,12 @@ module RankPoker
     end
 
     def <=>(other_hand)
-      CATEGORIES.index(category) <=> CATEGORIES.index(other_hand.category)
+      if (CATEGORIES.index(category) == CATEGORIES.index(other_hand.category))
+        group_of_cards.value.reverse <=> other_hand.group_of_cards.value.reverse
+      else
+        CATEGORIES.index(category) <=> CATEGORIES.index(other_hand.category)
+      end
+      
     end
 
     # look into instead all calling every single methods.
@@ -49,20 +54,24 @@ module RankPoker
     end
 
     def two_pair?
-      count_group_of_cards == [1, 2, 2]
+      group_of_cards.pair_size == [2,2]
     end
+    
 
     def three_of_a_kind?
-      count_group_of_cards == [1, 1, 3]
+      group_of_cards.pair_size == [3]
     end
+    
 
     def four_of_a_kind?
-      count_group_of_cards == [1, 4]
+      group_of_cards.pair_size == [4]
     end
+    
 
     def full_house?
-      count_group_of_cards == [2, 3]
+      group_of_cards.pair_size == [2, 3]
     end
+    
 
     def straight?
       if group_by_card_values.count == 5
@@ -75,8 +84,7 @@ module RankPoker
         end
 
         cards_in_order.sort.each_cons(2).all? do |first, second|
-        # try
-        first + 1 == second
+          first + 1 == second
         end
       end
     end
@@ -93,7 +101,6 @@ module RankPoker
       straight? && flush? && @cards.map(&:value).min == 10
     end
 
-    private
 
     # Group the array index into key => values
     #
@@ -107,12 +114,13 @@ module RankPoker
     #
     # @group_by_card_values {[8]=>[8,8], [2]=> [2,2], [4]=>[4] }
     # @returns  [[8,2] [2,1], [4,1]]only return the total pair
-    def count_group_of_cards
+    def group_of_cards
+      
       # test = group_by_card_values.map do |value, pair_size|
       #   Group.new(value, pair_size.count)
       # end
-      group_by_card_values.map { |_k,value| value.count }.sort
-      
+      test = group_by_card_values.map { |k,value| [k,value.count] }.sort
+      Group.new(test)
     end
   end
 end

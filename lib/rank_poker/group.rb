@@ -6,13 +6,17 @@ module RankPoker
     
     attr_accessor :value, :pair_size
     
-    def initialize(value, pair_size)
-      # args.each do |value, pair_size|
-      #   @value = value
-      #   @pair_size = pair_size.count
-      # end
-      @value = value
-      @pair_size = pair_size
+    def initialize(args)
+      @value = []
+      @pair_size = []
+
+      args.each do |arg|
+        unless arg[1] == 1
+          @value << arg[0]
+          @pair_size << arg[1]
+        end
+      end
+
     end
   end
 end

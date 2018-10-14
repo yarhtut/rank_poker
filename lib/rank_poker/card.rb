@@ -19,10 +19,6 @@ module RankPoker
 
     def <=>(other_card)
       value <=> other_card.value
-      # if (value == other_card.value)
-      #   suit <=> other_card.suit
-      # else
-      # end
     end
 
     def pair 

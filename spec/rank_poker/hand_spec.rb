@@ -8,22 +8,20 @@ RSpec.describe RankPoker::Hand do
   end
 
   it 'should have a pair' do
-    expect(RankPoker::Hand.new('TC 4S TC 5S 6S').pair?).to be true 
+    expect(RankPoker::Hand.new('TC 4S TC 5S 6S').pair?).to be true
   end
 
   it 'should have a double pair' do
-    expect(RankPoker::Hand.new('TC 4S TC 4S 6S').two_pair?).to be true 
+    expect(RankPoker::Hand.new('TC 4S TC 4S 6S').two_pair?).to be true
   end
 
   it 'should have a two pair' do
-    expect(RankPoker::Hand.new('TC 4S 6S 4S TC').two_pair?).to be true 
+    expect(RankPoker::Hand.new('TC 4S 6S 4S TC').two_pair?).to be true
   end
-
-
 
   context '#four_of_a_kind?' do
     it 'should have a four' do
-      expect(RankPoker::Hand.new('TC TS TD TC 6S').four_of_a_kind?).to be true 
+      expect(RankPoker::Hand.new('TC TS TD TC 6S').four_of_a_kind?).to be true
     end
 
     it 'should have a right category name' do
@@ -33,7 +31,7 @@ RSpec.describe RankPoker::Hand do
 
   context '#three_of_a_kind?' do
     it 'should have a three_king' do
-      expect(RankPoker::Hand.new('TC 4S TD TS 6S').three_of_a_kind?).to be true 
+      expect(RankPoker::Hand.new('TC 4S TD TS 6S').three_of_a_kind?).to be true
     end
 
     it 'should have a right category name' do
@@ -43,58 +41,75 @@ RSpec.describe RankPoker::Hand do
 
   context '#full_house?' do
     it 'should have a full house' do
-      expect(RankPoker::Hand.new('TC 6S TD TS 6D').full_house?).to be true 
+      expect(RankPoker::Hand.new('TC 6S TD TS 6D').full_house?).to be true
     end
     it 'should have a right category name' do
-      expect(RankPoker::Hand.new('TC 6S TD TS 6D').category).to eq 'Full house' 
+      expect(RankPoker::Hand.new('TC 6S TD TS 6D').category).to eq 'Full house'
     end
   end
 
- 
   context '#straight?' do
-    it 'should return true for straight' do 
-      expect(RankPoker::Hand.new('TC JS QD KS AD').straight?).to be true 
+    it 'should return true for straight' do
+      expect(RankPoker::Hand.new('TC JS QD KS AD').straight?).to be true
     end
 
-    it 'should return true for straight' do 
-      expect(RankPoker::Hand.new('2C 3S 4D 5S AD').straight?).to be true 
+    it 'should return true for straight' do
+      expect(RankPoker::Hand.new('2C 3S 4D 5S AD').straight?).to be true
     end
 
-    it 'should return false for straight' do 
-      expect(RankPoker::Hand.new('TC JS QD KS 2D').straight?).to be false 
+    it 'should return false for straight' do
+      expect(RankPoker::Hand.new('TC JS QD KS 2D').straight?).to be false
     end
   end
 
   context '#flush?' do
-    it 'should return true for flush' do 
-      expect(RankPoker::Hand.new('2C JC QC KC 5C').flush?).to be true 
+    it 'should return true for flush' do
+      expect(RankPoker::Hand.new('2C JC QC KC 5C').flush?).to be true
     end
 
-    it 'should return false for flush' do 
-      expect(RankPoker::Hand.new('2C 3C 4D KC 5C').flush?).to be false 
+    it 'should return false for flush' do
+      expect(RankPoker::Hand.new('2C 3C 4D KC 5C').flush?).to be false
     end
   end
 
   context '#straight_flush?' do
-    it 'should return true for straight flush' do 
-      expect(RankPoker::Hand.new('2C 3C 4C 5C 6C').straight_flush?).to be true 
+    it 'should return true for straight flush' do
+      expect(RankPoker::Hand.new('2C 3C 4C 5C 6C').straight_flush?).to be true
     end
 
-    it 'should return false for straight flush' do 
-      expect(RankPoker::Hand.new('2C 3C 4D KC 5C').straight_flush?).to be false 
-      expect(RankPoker::Hand.new('TC JC QD KC AC').straight_flush?).to be false 
+    it 'should return false for straight flush' do
+      expect(RankPoker::Hand.new('2C 3C 4D KC 5C').straight_flush?).to be false
+      expect(RankPoker::Hand.new('TC JC QD KC AC').straight_flush?).to be false
     end
   end
 
-
   context '#royal_flush?' do
-    it 'should return true for royal flush' do 
-      expect(RankPoker::Hand.new('TH JH QH KH AH').royal_flush?).to be true 
+    it 'should return true for royal flush' do
+      expect(RankPoker::Hand.new('TH JH QH KH AH').royal_flush?).to be true
     end
 
-    it 'should return false for royal flush' do 
-      expect(RankPoker::Hand.new('2C 3C 4C 5C 6C').royal_flush?).to be false 
-      expect(RankPoker::Hand.new('TC JC QD KC AC').royal_flush?).to be false 
+    it 'should return false for royal flush' do
+      expect(RankPoker::Hand.new('2C 3C 4C 5C 6C').royal_flush?).to be false
+      expect(RankPoker::Hand.new('TC JC QD KC AC').royal_flush?).to be false
+    end
+  end
+
+  context '#compair_hand' do
+    # pair
+    player_1 = RankPoker::Hand.new('TC 4S TC 5S 6S')
+
+    # two pair
+    player_2 = RankPoker::Hand.new('TC 4S 6S 4S TC')
+    player_3 = RankPoker::Hand.new('JC 4S 6S 4S JC')
+
+    it 'should be able to compare two different player' do
+      expect(player_1 <=> player_2).to eq 1 
+      expect(player_2 <=> player_1).to eq -1 
+    end
+
+    it 'should be able to compare two different player' do
+      expect(player_3 <=> player_2).to eq 1 
+      expect(player_2 <=> player_3).to eq -1 
     end
   end
 end
