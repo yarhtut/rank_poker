@@ -1,20 +1,20 @@
-
 module RankPoker
   class Hand
     include Comparable
     attr_reader :cards
 
     CARDS_PER_HAND = 5
+
     CATEGORIES = [
-      'Royal flush',
-      'Straight flush',
-      'Four of a kind',
+      'Pair',
+      'Two pair',
+      'Three of a kind',
+      'Flush',
       'Full house',
       'Straight',
-      'Flush',
-      'Three of a kind',
-      'Two pair',
-      'Pair'
+      'Four of a kind',
+      'Straight flush',
+      'Royal flush'
     ].freeze
 
     def initialize(cards)
@@ -50,31 +50,29 @@ module RankPoker
     end
 
     def pair?
-      group_by_card_values.count == 4
+      uniq_cards.count == 4
     end
 
     def two_pair?
-      group_of_cards.pair_size == [2,2]
+      group_of_cards.any?(&:pair?)
     end
     
 
     def three_of_a_kind?
-      group_of_cards.pair_size == [3]
+      group_of_cards.any?(&:tripple?)
     end
     
-
     def four_of_a_kind?
-      group_of_cards.pair_size == [4]
+      group_of_cards.any?(&:fours?)
     end
     
 
     def full_house?
-      group_of_cards.pair_size == [2, 3]
+      group_of_cards.any?(&:tripple?) && group_of_cards.any?(&:pair?)
     end
     
-
     def straight?
-      if group_by_card_values.count == 5
+      if uniq_cards.count == 5
 
         cards_in_order = @cards.map(&:value).sort
 
@@ -90,7 +88,7 @@ module RankPoker
     end
 
     def flush?
-      @cards.map(&:suit).uniq.length == 1 if group_by_card_values.count == 5
+      @cards.map(&:suit).uniq.length == 1 if uniq_cards.count == 5
     end
 
     def straight_flush?
@@ -106,21 +104,18 @@ module RankPoker
     #
     # @cards = ['TC 4S TC 4S 6S']
     # @returns HASH {[8]=>[8,8], [2]=> [2,2], [4]=>[4] }
-    def group_by_card_values
+    def uniq_cards
       @cards.group_by(&:value)
     end
 
-    # Convert group of card count
+    # create group object
     #
-    # @group_by_card_values {[8]=>[8,8], [2]=> [2,2], [4]=>[4] }
-    # @returns  [[8,2] [2,1], [4,1]]only return the total pair
+    # @ uniq_cards {[8]=>[8,8], [2]=> [2,2], [4]=>[4] }
+    # @ return  card value[] and pair_size[]
     def group_of_cards
-      
-      # test = group_by_card_values.map do |value, pair_size|
-      #   Group.new(value, pair_size.count)
-      # end
-      test = group_by_card_values.map { |k,value| [k,value.count] }.sort
-      Group.new(test)
+      uniq_cards.map do |card_value, cards| 
+        Group.new(card_value, cards.count) 
+      end
     end
   end
 end

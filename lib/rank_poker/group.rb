@@ -4,19 +4,23 @@ require "ostruct"
 module RankPoker
   class Group
     
-    attr_accessor :value, :pair_size
+    attr_accessor :value, :size
     
-    def initialize(args)
-      @value = []
-      @pair_size = []
+    def initialize(value, size)
+      @value = value 
+      @size = size 
+    end
 
-      args.each do |arg|
-        unless arg[1] == 1
-          @value << arg[0]
-          @pair_size << arg[1]
-        end
-      end
+    def pair?
+      size == 2
+    end
 
+    def tripple?
+      size == 3
+    end
+
+    def fours?
+      size == 4
     end
   end
 end

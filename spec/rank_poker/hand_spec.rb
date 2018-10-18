@@ -98,18 +98,33 @@ RSpec.describe RankPoker::Hand do
     # pair
     player_1 = RankPoker::Hand.new('TC 4S TC 5S 6S')
 
-    # two pair
+    # two_pair
     player_2 = RankPoker::Hand.new('TC 4S 6S 4S TC')
     player_3 = RankPoker::Hand.new('JC 4S 6S 4S JC')
+    player_4 = RankPoker::Hand.new('TC 5S 6S 5S TC')
 
-    it 'should be able to compare two different player' do
-      expect(player_1 <=> player_2).to eq 1 
-      expect(player_2 <=> player_1).to eq -1 
+    # three_of_a_kind 
+    player_5 = RankPoker::Hand.new('TC TS 6S 4S TC')
+
+    it 'with `pair` vs `two pair` ' do
+      expect(player_2 <=> player_1).to eq 1 
+      expect(player_1 <=> player_2).to eq -1 
     end
 
-    it 'should be able to compare two different player' do
+    it 'with `two pair` vs `two pair` between larger pair' do
       expect(player_3 <=> player_2).to eq 1 
       expect(player_2 <=> player_3).to eq -1 
+    end
+
+    it 'with `two pair` vs `two pair` between larger pair ignore lower pair' do
+      expect(player_3 <=> player_4).to eq 1 
+      expect(player_4 < player_3).to eq true
+      expect(player_4 > player_2).to eq true 
+    end
+
+    it 'with `two pair` vs `three of a kind` between larger suit for' do
+      expect(player_5 <=> player_4).to eq 1 
+      expect(player_4 <=> player_5).to eq -1 
     end
   end
 end

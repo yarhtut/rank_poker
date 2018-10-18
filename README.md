@@ -55,3 +55,9 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 # class Group < ::OpenStruct
 #   attr_reader :value, size
 # end
+
+
+
+# after 18/11
+# Group class nameing + object storing  
+# should be good to contain infromation about the single value in Group.
